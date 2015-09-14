@@ -9,3 +9,5 @@ Teoreticky by mělo stačit stáhnout si soubory (Chrono.html, funkce.js, tridic
 Co se týče úprav svati.js (tj. seznam svátků), teoreticky by to mělo jít velice snad, stačí dodržet formát a styl a lze libovolně doplňovat (či ubírat) podle toho, co kdo potřebuje (s ohledem na stát a v podstatě i na kraj). silně nedoporučuji v Chrono.html měnit atribut "id", právě podle něj se vypisují výsledky a vyhledává se ve formuláři, a umístění skriptů, přidání tříd pro CSS by vadit nemělo.
 
 Omluvte styl programování, je to vůbec můj první pokus s js (znalé oko nejspíše i postřehne co bylo psáno jako první a co jako poslední). Budu velice rád, když to kdokoli použije, upraví, cokoli. Jen bych rád věděl kde a kdo (pouze z důvodu referencí jako + pro školu)
+
+Fajn by byl i překlad do AJ, ať už README nebo celé aplikace (na původním webu je kupodivu dost přístupů ze zahraničí)
