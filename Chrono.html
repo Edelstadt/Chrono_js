@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="generator" content="Bluefish 2.2.7" >
+        <meta name="keywords" content="chronologie, historie">
+        <meta name="author" content="Vratislav" >
+        <meta name="description" content="Pomůcka pro chronologické výpočty">
+        <!-- načtení js, kde je objekt JSON se svátky (uložení v js kvůli Google Chrome) -->
+        <script type="text/javascript" src="svati.js"></script>
+        <!-- načtení js s funkcemi na počítání dat -->
+        <script type="text/javascript" src="funkce.js"></script>
+        
+        <title>Chronologické pomůcky</title>
+    </head>
+    <body>
+        <p>Tato pomůcka pro historickou chronologii je určena pro základní výpočty, určení dnů v týdnu atd. Použití na vlastní nebezpečí, nezaručena správnost výsledků!
+            Nicméně by měla fungovat. V seznamu svátků jsou pouze pevné svátky. Pokud narazíte na chybu, popřípadě budete mít návrhy na zlepšení, přidání čehokoli,
+            napište na marcus.scalpere@gmail.com
+        </p>
+        <br>
+        <p>
+            <b>Po zadání určitého svátku, jména dne (pondělí, úterý..) a informace zdali máte na mysli den PŘED či PO zadaném svátku (Sobota před/ Sobota po)
+            Vám formulář vygeneruje rok zapsaný v dnešní nám známé podobě.</b>
+            <br>
+            |Pro roky před 1582 (přepočítává na juliánský kalendář), od roku 1582 počítá s greg. kalendářem|
+            <br>
+            <i>(Např. Sobota před Mikulášem, rok 1800" - nejprve zadáme rok: "1800", svatý/svátek: "Mikuláš", den v týdnu: "Sobota", Postavení dne vůči svátku: "před"
+            --- Jako výsledek jsme dostali: 1800-11-29)</i>
+            Toť vše vzhůru do počítání:  
+        </p>
+        <div style="text-align: center">
+        <!-- začátek prvního formuláře pro odečítání a přičítání dnů -->
+            <form id="formular"action="" method="post">
+                Rok:
+                <!-- položka pro vložení roku -->
+                <input id="rok" type="number" name="rok" maxlength="4" min="1200" max="2020" placeholder="Rok 1200 - 2020" /><br>
+                Vyber řazení v seznamu: <br>
+                (Zadejte jak chcete seřadit seznam svátků, Cz - česká verze, Lat - latinská, De - německá, Datum - datum ve formátu DD. MM.) <br>
+                <b>Seznam se vytvoří až po výběru způsobu řazení!</b>
+                Upozornění - seřazení proběhne podle abecedy (a to bohužel platí i pro datum)<br>
+                <!-- položka radio (přepínač) pro výbšr řazení svátků -->
+                <input type="radio" name="razeni" id="11" onclick=myFunction() value="1"  checked>Cz - Lat - De - Datum
+                <br>
+                <input type="radio" name="razeni" id="21" onclick=myFunction() value="2">Lat - Cz - De - Datum
+                <br>
+                <input type="radio" name="razeni" id="31" onclick=myFunction() value="3">De - Cz - Lat - Datum
+                <br>
+                <input type="radio" name="razeni" id="41" onclick=myFunction() value="4">Datum - Cz - Lat - De
+                <br>
+                <br>
+                Výběr typu kalendáře (pro CZ - pro roky 1582 a více gregoriánský)<br>
+                <!-- výběr typu kalendáře, juliánský, gregoriánský -->
+                <select id="kal" name="kal">
+                    <option value="G">Gregoriánský</option>
+                    <option value="J">Juliánský</option>
+                </select>
+                <br><br>
+                Seznam svátků : <br>
+                (Názvy jsou odděleny středníkem. Pokud se v seznamu objeví "Neznámé", tak položka ještě není doplňěna)  <br>
+                <!-- výběr svátku, generuje se z svati.js a třídí se tridic2.js -->
+                <select name="svaty" id="svaty">
+                </select><br>
+                Den v týdnu :
+                <!-- výběr hledaného dne -->
+                <select id="den_tydnu" name="den_v_tydnu">
+                    <option value="0">Neděle</option>
+                    <option value="1">Pondělí</option>
+                    <option value="2">Úterý</option>
+                    <option value="3">Středa</option>
+                    <option value="4">Čtvrtek</option>
+                    <option value="5">Pátek</option>
+                    <option value="6">Sobota</option>
+                </select>
+                <br>
+                Před dnem svatého nebo po :
+                <!-- výběr pozice, jestli je hledaný den před nebo po daném svátku -->
+                <select id="predpo" name="pred_nebo_po">
+                    <option value="pred">Před</option>
+                    <option value="po">Po</option>
+                </select>
+                <br>
+            </form>
+            
+            <br>
+            <!-- výpis výsledku hledání -->
+            <div id="vysledek"></div>
+            <button onclick="vypis()">Vypis</button>
+            <br><br><br>
+            A tento formulář vypočítává pro zadaný rok velikonoční pondělí (gregoriánské i juliánské),
+            sluneční kruh, nedělní písmeno (opět gregoriánské i juliánské), konkurenty, zlaté číslo a epakty (greg. i jul.), a velkou část liturgického roku.
+            <br>Update: náhodná chyba snad s konečnou platností opravena, správnost výsledku odhadována na 95%<br>
+            <!-- začátek druhého formuláře -->
+            <form id="formular2"action="" method="post">
+            <!-- zadání roku pro který se bude počítat -->
+                Rok : <input id="rok2" type="number" name="rok2" maxlength="4" min="1200" max="2020" placeholder="Rok 1200 - 2020" /><br>
+            </form>
+            (Tlačítko pro odeslání je pro oba formuláře společné)<br>
+            <button onclick="vypis2()">Vypis2</button><br>
+            
+            Sluneční kruh : <span id="slunecni_kruh"></span><br>
+            Konkurenty : <span id="konkurenty"></span><br>
+            Zlaté číslo : <span id="zlate_cislo"></span><br>
+            Nedělní písmeno juliánské : <span id="ned_pis_jul"></span><br>
+            Nedělní písmeno gregoriánské : <span id="ned_pis_gre"></span><br>
+            Epakty juliánské : <span id="epak_jul"></span><br>
+            Epakty gregoriánské : <span id="epak_gre"></span><br>
+            Velikonoce juliánské : <span id="vel_jul"></span><br>
+            Velikonoce gregoriánské : <span id="vel_gre"></span><br>
+            
+            Devítník (Septuagesima) : <span id="devitnik"></span><br>
+            Neděle po Devítníku (Sexagesima) : <span id="ned_po_devitnik"></span><br>
+            Masopustní(pokladná)) neděle (Quinquagesima, Dominica quadragesime) : <span id="pok_ned"></span><br>
+            Popeleční středa (Dies cinerum, Quadragesimae) : <span id="pop_str"></span><br>
+            Pražná (liščí, 1. neděle postní) (Quadragesima, Invocavit) : <span id="praz_ned"></span><br>
+            2. neděle postní (Dominica II. Quadragesime, Reminiscere) : <span id="rem"></span><br>
+            Kýchavá neděle, 3. neděle postní (Dominica III. Quadragesime, Oculi) : <span id="kych_ned"></span><br>
+            Družebná, veselá, středopostní, 4. neděle postní (Dominica IV. Quadragesime, Laetare) : <span id="druz_ned"></span><br>
+            Smrtná, černá, 5. neděle postní (Dominica V. Quadragesime, Judica) : <span id="smrt_ned"></span><br>
+            Květná, 6. neděle postní (Dominica VI.. Quadragesime, Dominica palmarum) : <span id="kvet_ned"></span><br>
+            Zelený čtvrtek (Coena Domini, ferie quinta viridum, feria quinta magna) : <span id="zel_ctvrt"></span><br>
+            Velký pátek (Parasceve) : <span id="vel_pat"></span><br>
+            Bílá sobota (Sabbatum sanctum, magnum, luminum) : <span id="bil_sob"></span><br>
+            Bílá neděle, průvodní (Dominica I. post Pascha, Quasimodo genti, dominica in albis) : <span id="bil_ned"></span><br>
+            Den Svátosti (Festum armorum Christi) : <span id="den_svat"></span><br>
+            Dominica II. post Pascha (Misericordia) : <span id="mis"></span><br>
+            Dominica III. post Pascha (Jubilate) : <span id="jub"></span><br>
+            Dominica IV. post Pascha (Cantate) : <span id="can"></span><br>
+            Křížová, prosebná neděle (Dominica V. post Pascha, Rogationum) : <span id="kriz_ned"></span><br>
+            Nanebevstoupení Páně (Ascensio Domini) : <span id="nanebe"></span><br>
+            Dominica VI. post Pascha (Dominica post Ascensionem, Exaudi) : <span id="exaudi"></span><br>
+            Letnice, Boží hod svatodušní (Pentecoste) : <span id="pentecoste"></span><br>
+            Svátek sv. Trojice (Dominica I. post Pentecosten, festum sancte Trinitatis) : <span id="trojice"></span><br>
+            Božího Těla (festum Corporis Christi) : <span id="boz_tela"></span><br>
+            Čtvrtá neděle adventní : <span id="ad_4"></span><br>
+            Třetí neděle adventní : <span id="ad_3"></span><br>
+            Druhá neděle adventní : <span id="ad_2"></span><br>
+            První neděle adventní : <span id="ad_1"></span><br>
+            <div id="nedele_letni"></div><br>
+            <div id="nedele_masopustu"></div>
+            
+        </div>
+        <br>
+        <br>
+        <!-- vložení dalších js, umístění nutné vzhledem k návaznosti na další položky -->
+        <script type="text/javascript" src="vypis_json.js"></script>
+        <script type="text/javascript" src="tridic2.js"></script>
+        <hr>
+        <footer>
+            <p align="center">Created by: Marek Dlabáček<br>
+                Contact information: <a href="mailto:marcus.scalpere@gmail.com">marcus.scalpere@gmail.com</a><br>
+                Source code: <a href="https://github.com/Edelstadt/Chrono">https://github.com/Edelstadt/Chrono</a>.
+            </p>
+            <br>
+        </footer>
+    </body>
+</html>
